@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECRET BASE | 会員制クラブ</title>
+    <meta name="robots" content="noindex, nofollow"> <style>
+        /* --- 1. ベースデザイン：闇と警告色 --- */
+        :root {
+            --bg-color: #050505;
+            --text-main: #e0e0e0;
+            --accent-red: #cc0000;   /* 血のような赤 */
+            --accent-dark: #1a0000;
+            --font-main: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+            overflow-x: hidden; /* 横揺れ防止 */
+        }
+
+        a { text-decoration: none; transition: 0.3s; }
+        strong { color: #fff; font-weight: 900; }
+
+        /* --- 2. ノイズ・グリッチ演出（タイトル） --- */
+        .glitch-wrapper {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .glitch {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #fff;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+            letter-spacing: 0.05em;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+        }
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--accent-red);
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 #0000ff;
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); }
+            20% { clip-path: inset(60% 0 10% 0); }
+            100% { clip-path: inset(10% 0 50% 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); }
+            20% { clip-path: inset(80% 0 5% 0); }
+            100% { clip-path: inset(30% 0 20% 0); }
+        }
+
+        /* --- 3. レイアウト共通設定 --- */
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--accent-red);
+            border-left: 6px solid var(--accent-red);
+            padding-left: 15px;
+            margin-bottom: 20px;
+            margin-top: 50px;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--accent-dark) 0%, transparent 100%);
+        }
+
+        /* --- 4. ヒーローセクション --- */
+        .hero {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle, #111 0%, #000 80%);
+            border-bottom: 4px solid var(--accent-red);
+            padding: 20px;
+            position: relative;
+        }
+        /* 背景に薄くノイズ画像を入れるとベスト */
+        
+        .hero-sub {
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+            padding: 5px 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            background: #000;
+            letter-spacing: 0.1em;
+        }
+        .hero-text {
+            margin-top: 30px;
+            font-size: 1rem;
+            color: #bbb;
+            font-weight: bold;
+        }
+
+        /* --- 5. 警告ボックス --- */
+        .warning-box {
+            background-color: #0a0000;
+            border: 1px solid var(--accent-red);
+            color: #ffcccc;
+            padding: 20px;
+            margin: 20px auto;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(204, 0, 0, 0.2);
+        }
+
+        /* --- 6. メディアギャラリー（エロ・怪しさ演出） --- */
+        .media-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .media-item {
+            position: relative;
+            aspect-ratio: 4/3;
+            overflow: hidden;
+            background: #000;
+            border: 1px solid #333;
+        }
+        .media-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* ↓このフィルターで普通の写真を「怪しい画像」に変える */
+            filter: contrast(1.2) brightness(0.7) sepia(0.3) hue-rotate(-10deg);
+        }
+        .live-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: red;
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            font-weight: bold;
+            animation: blink 1.5s infinite;
+        }
+        .overlay-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 20px 5px 5px 5px;
+        }
+        @keyframes blink { 0%{opacity:1;} 50%{opacity:0.4;} 100%{opacity:1;} }
+
+        /* --- 7. エリアタグ --- */
+        .area-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .area-tag {
+            background: #1a1a1a;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        /* --- 8. 料金プラン --- */
+        .plan-box {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .plan-box.featured {
+            border: 1px solid var(--accent-red);
+            background: linear-gradient(90deg, var(--accent-dark) 0%, #000 100%);
+            position: relative;
+        }
+        .plan-info h3 { margin: 0; font-size: 1.1rem; color:#fff; }
+        .plan-info p { margin: 5px 0 0 0; font-size: 0.8rem; color:#888; }
+        .plan-price { font-size: 1.5rem; font-weight: 900; color: var(--accent-red); }
+
+        /* --- 9. CTAボタン --- */
+        .cta-btn {
+            display: block;
+            width: 100%;
+            background: var(--accent-red);
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 900;
+            border: none;
+            margin-top: 40px;
+            box-shadow: 0 0 20px rgba(204, 0, 0, 0.5);
+            animation: pulse 2s infinite;
+            cursor: pointer;
+        }
+        .cta-btn:hover { opacity: 0.9; }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(204, 0, 0, 0.5); }
+            50% { transform: scale(1.02); box-shadow: 0 0 30px rgba(204, 0, 0, 0.8); }
+            100% { transform: scale(1); box-shadow: 0 0 20px rgba(204, 0, 0, 0.5); }
+        }
+
+        /* --- フッター --- */
+        footer {
+            background: #000;
+            border-top: 1px solid #222;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 50px;
+        }
+        footer p { font-size: 0.7rem; color: #444; }
+
+        /* スマホ最適化 */
+        @media (max-width: 480px) {
+            .glitch { font-size: 2.2rem; }
+            .hero h1 { font-size: 1.8rem; }
+            .media-grid { grid-template-columns: 1fr 1fr; } /* スマホでも2列の方が見やすい */
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="hero-sub">会員以外の立入禁止</div>
+        
+        <div class="glitch-wrapper">
+            <span class="glitch" data-text="SECRET BASE">SECRET BASE</span>
+        </div>
+
+        <p class="hero-text">
+            まだ、アプリの「いいね」で<br>
+            時間をドブに捨てているのか？
+        </p>
+        
+        <p style="font-size:0.8rem; color:#666; margin-top:50px;">SCROLL DOWN ▼</p>
+    </header>
+
+    <section class="container">
+        <div class="warning-box">
+            【警告：完全紹介制】<br><br>
+            ここは「選ばれた男」だけの遊び場だ。<br>
+            紹介コードを持たない者の申請は、<br>
+            全て破棄する。
+        </div>
+
+        <h2 class="section-title">ここにあるのは「本能」だけ</h2>
+        <p>
+            面倒なメッセージのやり取り。<br>
+            写真と違う女。ドタキャン。<br>
+            <br>
+            そんな下らない日常は、もう忘れろ。<br>
+            重厚な扉の向こうにあるのは、<br>
+            <strong>酒と、女と、圧倒的な熱気だけだ。</strong>
+        </p>
+    </section>
+
+    <section class="container">
+        <h2 class="section-title">実際の「空気」を見ろ</h2>
+        <p style="margin-bottom:20px; color:#aaa;">
+            言葉はいらない。<br>
+            昨晩、どこかの部屋で起きた現実だ。
+        </p>
+
+        <div class="media-grid">
+            
+            <div class="media-item">
+                <img src="https://via.placeholder.com/400x400/222/555?text=IMAGE+01" alt="店内の様子">
+                <div class="live-badge">LIVE</div>
+                <div class="overlay-text">都内某所 / 23:00</div>
+            </div>
+
+            <div class="media-item">
+                <img src="https://via.placeholder.com/400x400/111/666?text=IMAGE+02" alt="会員女性">
+                <div class="overlay-text">20代 / 看護師 / 埼玉</div>
+            </div>
+
+            <div class="media-item">
+                <img src="https://via.placeholder.com/400x400/000/444?text=IMAGE+03" alt="パーティ">
+                <div class="overlay-text">会員限定パーティ</div>
+            </div>
+
+            <div class="media-item">
+                <img src="https://via.placeholder.com/400x400/330000/ff0000?text=CENSORED" alt="秘匿画像">
+                <div class="live-badge">NOW</div>
+                <div class="overlay-text">VIP ROOM</div>
+            </div>
+
+        </div>
+        <p style="font-size:0.7rem; color:#555; text-align:right;">
+            ※プライバシー保護のため一部加工済み
+        </p>
+    </section>
+
+    <section class="container">
+        <h2 class="section-title">活動エリア</h2>
+        <p>
+            遊び場は、東京だけではない。<br>
+            あなたの日常のすぐ裏側でも、毎夜「宴」は開かれている。
+        </p>
+        
+        <div class="area-list">
+            <div class="area-tag">東京都内</div>
+            <div class="area-tag">横浜・湘南</div>
+            <div class="area-tag">千葉エリア</div>
+            <div class="area-tag">埼玉エリア</div>
+        </div>
+        
+        <p style="font-size:0.8rem; color:#888; margin-top:15px;">
+            ※具体的な場所（タワマン、貸別荘など）は、<br>
+            会員にのみ当日通知される。
+        </p>
+
+        <h2 class="section-title">入会審査について</h2>
+        <p>
+            会員の質を保つため、入会には必ず<strong>「本部（東京）での対面審査」</strong>が必要となる。
+        </p>
+        <p>
+            千葉にいようが神奈川にいようが、条件は同じだ。<br>
+            <strong>たった一度、都内へ来る覚悟もない男はお断りだ。</strong>
+        </p>
+        
+        <div style="background:#111; padding:15px; border:1px solid #333; margin-top:20px;">
+            <ul style="list-style:none; padding:0; margin:0; font-size:0.9rem;">
+                <li style="margin-bottom:10px;">✅ <strong>審査場所：</strong>都内某所（駅近辺）</li>
+                <li style="margin-bottom:10px;">✅ <strong>所要時間：</strong>15分程度</li>
+                <li>✅ <strong>面接官：</strong>当クラブの上級会員</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="container">
+        <h2 class="section-title">入会金</h2>
+        <p style="margin-bottom:20px; color:#aaa;">※月額費用なし。最初の一回のみ。</p>
+
+        <div class="plan-box">
+            <div class="plan-info">
+                <h3>ブロンズ会員</h3>
+                <p>まずは空気を味わいたい方</p>
+            </div>
+            <div class="plan-price">29,000円</div>
+        </div>
+
+        <div class="plan-box featured">
+            <div style="position:absolute; top:-10px; left:10px; background:var(--accent-red); color:#fff; font-size:0.7rem; padding:2px 5px; font-weight:bold;">推奨プラン</div>
+            <div class="plan-info">
+                <h3 style="color:var(--accent-red);">シルバー会員</h3>
+                <p>優先予約権あり・一番人気</p>
+            </div>
+            <div class="plan-price">38,000円</div>
+        </div>
+
+        <div class="plan-box">
+            <div class="plan-info">
+                <h3 style="color:gold;">ゴールド会員</h3>
+                <p>VIPルーム・全エリア解放</p>
+            </div>
+            <div class="plan-price" style="color:gold;">59,000円</div>
+        </div>
+    </section>
+
+    <section class="container" style="text-align:center; padding-bottom:60px;">
+        <div style="margin: 40px 0;">
+            <p style="font-size:1.1rem; font-weight:bold; margin-bottom:10px;">
+                紹介コードの準備はできたか？<br>
+                引き返すなら今だ。
+            </p>
+            <p style="font-size:0.8rem; color:#666;">
+                ※コード無記入での送信は無効とする。
+            </p>
+        </div>
+
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSc0I_dqsli_IzWa7cbCRQjMUXNhUcA9j0DYc7fnDK_Nw_x0tA/viewform?usp=header" class="cta-btn">
+            入会審査に申し込む
+        </a>
+        
+        <p style="margin-top:20px; font-size:0.8rem; color:#444;">
+            冷やかし厳禁。<br>即ブラックリスト登録する。
+        </p>
+    </section>
+
+    <footer>
+        <p>
+            SECRET BASE<br>
+            TOKYO / KANAGAWA / CHIBA / SAITAMA<br><br>
+            ※当サイトは成人のみを対象としています。<br>
+            ※本サービスは出会いを確約するものではありません。<br>
+            ※公序良俗に反する行為を強制するものではありません。
+        </p>
+    </footer>
+
+</body>
+</html>
