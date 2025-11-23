@@ -21,7 +21,7 @@
             margin: 0;
             padding: 0;
             line-height: 1.8;
-            overflow-x: hidden; /* 横揺れ防止 */
+            overflow-x: hidden;
         }
 
         a { text-decoration: none; transition: 0.3s; }
@@ -103,7 +103,6 @@
             padding: 20px;
             position: relative;
         }
-        /* 背景に薄くノイズ画像を入れるとベスト */
         
         .hero-sub {
             border: 1px solid var(--accent-red);
@@ -134,7 +133,7 @@
             box-shadow: 0 0 10px rgba(204, 0, 0, 0.2);
         }
 
-        /* --- 6. メディアギャラリー（エロ・怪しさ演出） --- */
+        /* --- 6. メディアギャラリー（サイズ自動調整＆ボカシ機能） --- */
         .media-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -143,18 +142,39 @@
         }
         .media-item {
             position: relative;
-            aspect-ratio: 4/3;
+            aspect-ratio: 4/3; /* どんな画像もこの比率に固定 */
             overflow: hidden;
             background: #000;
             border: 1px solid #333;
         }
+        
+        /* 通常の画像処理：少し暗く、コントラスト強め */
         .media-item img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            /* ↓このフィルターで普通の写真を「怪しい画像」に変える */
-            filter: contrast(1.2) brightness(0.7) sepia(0.3) hue-rotate(-10deg);
+            object-fit: cover; /* 枠に合わせてトリミング */
+            filter: contrast(1.2) brightness(0.7) sepia(0.2);
+            transition: 0.3s;
         }
+
+        /* ★ボカシ機能（censoredクラスがついた画像のみ） */
+        .media-item.censored img {
+            filter: blur(12px) brightness(0.5) !important; /* 激しいボカシと暗転 */
+        }
+        .media-item.censored::after {
+            content: "CENSORED";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-10deg);
+            color: rgba(255,0,0,0.7);
+            font-size: 1.5rem;
+            font-weight: 900;
+            border: 2px solid rgba(255,0,0,0.7);
+            padding: 5px 10px;
+            z-index: 10;
+        }
+
         .live-badge {
             position: absolute;
             top: 8px;
@@ -165,6 +185,7 @@
             padding: 2px 6px;
             font-weight: bold;
             animation: blink 1.5s infinite;
+            z-index: 5;
         }
         .overlay-text {
             position: absolute;
@@ -175,6 +196,7 @@
             color: #fff;
             font-size: 0.7rem;
             padding: 20px 5px 5px 5px;
+            z-index: 5;
         }
         @keyframes blink { 0%{opacity:1;} 50%{opacity:0.4;} 100%{opacity:1;} }
 
@@ -250,7 +272,7 @@
         @media (max-width: 480px) {
             .glitch { font-size: 2.2rem; }
             .hero h1 { font-size: 1.8rem; }
-            .media-grid { grid-template-columns: 1fr 1fr; } /* スマホでも2列の方が見やすい */
+            .media-grid { grid-template-columns: 1fr 1fr; } 
         }
     </style>
 </head>
@@ -300,23 +322,23 @@
         <div class="media-grid">
             
             <div class="media-item">
-                <img src="https://via.placeholder.com/400x400/222/555?text=IMAGE+01" alt="店内の様子">
+                <img src="images/pic1.jpg" alt="店内の様子">
                 <div class="live-badge">LIVE</div>
                 <div class="overlay-text">都内某所 / 23:00</div>
             </div>
 
             <div class="media-item">
-                <img src="https://via.placeholder.com/400x400/111/666?text=IMAGE+02" alt="会員女性">
+                <img src="images/pic2.jpg" alt="会員女性">
                 <div class="overlay-text">20代 / 看護師 / 埼玉</div>
             </div>
 
             <div class="media-item">
-                <img src="https://via.placeholder.com/400x400/000/444?text=IMAGE+03" alt="パーティ">
+                <img src="images/pic3.jpg" alt="パーティ">
                 <div class="overlay-text">会員限定パーティ</div>
             </div>
 
-            <div class="media-item">
-                <img src="https://via.placeholder.com/400x400/330000/ff0000?text=CENSORED" alt="秘匿画像">
+            <div class="media-item censored">
+                <img src="images/pic4.jpg" alt="秘匿画像">
                 <div class="live-badge">NOW</div>
                 <div class="overlay-text">VIP ROOM</div>
             </div>
